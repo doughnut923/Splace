@@ -14,8 +14,8 @@ connectDB();
 app.use("/user", userRoute);
 app.use("/location", locationRoute);
 
-app.use(errorHandler);
+app.use(express.static('public'));
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
-})
+});

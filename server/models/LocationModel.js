@@ -13,7 +13,9 @@ const locationSchemea = mongoose.Schema({
         type: String,
         required: [true, 'Please add a password']
     },
-    
+    imageAddr:{
+        type: [String]
+    }
 });
 
 module.exports = mongoose.model("Location", locationSchemea);
