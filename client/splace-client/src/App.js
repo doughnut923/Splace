@@ -7,6 +7,7 @@ import { Map } from 'react-map-gl';
 import { Feature } from 'ol';
 import { Point } from 'ol/geom';
 import PointAdder from './PointAdder';
+import Icon from './Icon';
 
 function App() {
 
@@ -23,16 +24,17 @@ function App() {
 
   const [currCoord, setCurrCoord] = useState([0, 0]);
   const [currDesc, setCurrDesc] = useState("");
+  const [currTitle, setCurrTitle] = useState("");
 
 
   function addPoints(desc) {
 
     setPointsDB(
       [...PointsDB,
-        {
-          coordinate:currCoord,
-          desc: currDesc
-        }
+      {
+        coordinate: currCoord,
+        desc: currDesc
+      }
       ]
     );
   }
@@ -51,10 +53,13 @@ function App() {
 
 
   return (
-    <div id="map-container">
-      <MapComponent getSavedPoints={getSavedPoints} setCurrCoord={setCurrCoord} PointsDB={PointsDB}/>
-      <PointAdder addPoints={addPoints} setCurrDesc = {setCurrDesc} currDesc={currDesc}/>
-    </div>
+    <>
+      <div id="map-container">
+        <Icon/>
+        <MapComponent getSavedPoints={getSavedPoints} setCurrCoord={setCurrCoord} PointsDB={PointsDB} />
+        <PointAdder className="sidebar" addPoints={addPoints} setCurrDesc={setCurrDesc} currDesc={currDesc} setCurrTitle={setCurrTitle} currTitle={currTitle}/>
+      </div>
+    </>
   );
 }
 

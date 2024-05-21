@@ -32,6 +32,7 @@ export default function MapComponent({ getSavedPoints, setCurrCoord, PointsDB}) 
                 maxZoom: 19,
                 extent: [12650145.166640699, 2523450.4166796366, 12762053.88243911, 2586813.9495912604]
             }),
+            controls :[]
         });
 
         const marker_layer = new VectorLayer({
