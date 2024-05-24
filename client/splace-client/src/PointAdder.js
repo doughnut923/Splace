@@ -1,27 +1,30 @@
 
 import './App.css';
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ImageLoader from './ImageLoader';
 import LocationContext from "./LocationContext"
 import LocationImages from "./LocationImages"
 import LocationTitle from './LocationTitle';
 
-function PointAdder({ addPoints, setCurrDesc, currDesc, currTitle, setCurrTitle }) {
+function PointAdder({ showSidebar, setShowSidebar, addPoints, setCurrDesc, currDesc, currTitle, setCurrTitle }) {
 
-  const { inputPhase, setInputPhase } = useState(0);
+  const [inputPhase, setInputPhase] = useState(0);
 
   return (
     <>
-      <div className="sidebar">
+      <div className={showSidebar ? "show-sidebar sidebar" : "sidebar"}>
 
-        <div id='exit-button'>
-          <span class="material-symbols-outlined">
+        <div id='exit-button' onClick={() => {
+          console.log(1);
+          setShowSidebar(0);
+        }} >
+          <span className="material-symbols-outlined">
             close
           </span>
         </div>
 
-        <div className='add-context-section'>
+        <div className={!inputPhase ? 'show add-context-section' : 'add-context-section'}>
           <form className='input-field-container'>
             <div className='input-field'>
               <h1 className="input-title">【題】</h1>
@@ -29,21 +32,26 @@ function PointAdder({ addPoints, setCurrDesc, currDesc, currTitle, setCurrTitle 
                 setCurrTitle(e.target.value);
               }}></input>
               <h1 className="input-title">【文】</h1>
-              <textarea className='input-field-large' value={currDesc} type='text' onChange={e => {
+              <textarea className='input-field-large' placeholder="你做咗啲乜？" value={currDesc} type='text' onChange={e => {
                 setCurrDesc(e.target.value);
               }}></textarea>
             </div>
-            <button id="submit-context" type="button" onClick={addPoints} className='btn'>續</button>
+            <button id="submit-context" type="button" onClick={() => {
+              setInputPhase(1);
+            }} className='btn'>續</button>
           </form>
         </div>
 
-        <div className='add-image-section'>
+        <div className={inputPhase ? "add-image-section show" : "add-image-section"}>
           <div className='input-field-container'>
             <h1 className='input-title'>【映】</h1>
             <ImageLoader />
             <form>
               <input type='file' id="image-upload" name='filename'></input>
-              <button id="submit-image" type="button" onClick={addPoints} className='btn'>結</button>
+              <button id="submit-image" type="button" onClick={() => {
+                setInputPhase(0);
+                addPoints();
+              }} className='btn'>結</button>
             </form>
           </div>
         </div>

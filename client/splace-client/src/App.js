@@ -8,17 +8,37 @@ import { Feature } from 'ol';
 import { Point } from 'ol/geom';
 import PointAdder from './PointAdder';
 import Icon from './Icon';
+import Login from './Login';
+
 
 function App() {
+
+  const [loginStatus, setLoginStatus] = useState(0);
+
+  console.log(loginStatus);
 
   const [PointsDB, setPointsDB] = useState([
     {
       coordinate: [12705901.065789457, 2555400.672681684],
-      desc: "My first Point"
+      title: "Title", 
+      desc: "My first Point",
+      id: crypto.randomUUID()
     },
     {
       coordinate: [12728949.172394536, 2559062.2261289414],
-      desc: "My second Point"
+      title: "Title", 
+      desc: "My second Point",
+      id: crypto.randomUUID()
+    }
+  ]);
+
+  const [users, setUser] = useState([
+    {
+      name: "Hon",
+      password: "123"
+    },{
+      name: "Jon",
+      password: "321"
     }
   ]);
 
@@ -26,6 +46,7 @@ function App() {
   const [currDesc, setCurrDesc] = useState("");
   const [currTitle, setCurrTitle] = useState("");
 
+  const [showSidebar, setShowSidebar] = useState(0);
 
   function addPoints(desc) {
 
@@ -33,10 +54,15 @@ function App() {
       [...PointsDB,
       {
         coordinate: currCoord,
-        desc: currDesc
+        title: currTitle,
+        desc: currDesc,
+        id: crypto.randomUUID()
       }
       ]
     );
+    setCurrCoord([0,0]);
+    setCurrDesc("");
+    setCurrTitle("");
   }
 
   function getSavedPoints() {
@@ -45,19 +71,22 @@ function App() {
       return new Feature({
         geometry: new Point(
           point.coordinate
-        )
+        ),
+        name: point.id
       })
     });
-
   }
 
 
   return (
     <>
-      <div id="map-container">
+      <div id='login-container' className={loginStatus?"unshow-login":"show-login"}>
+        <Login users={users} setLoginStatus={setLoginStatus}/>
+      </div>
+      <div id="map-container" className={loginStatus?"show-map":"unshow-map"}>
         <Icon/>
-        <MapComponent getSavedPoints={getSavedPoints} setCurrCoord={setCurrCoord} PointsDB={PointsDB} />
-        <PointAdder className="sidebar" addPoints={addPoints} setCurrDesc={setCurrDesc} currDesc={currDesc} setCurrTitle={setCurrTitle} currTitle={currTitle}/>
+        <MapComponent showSidebar={showSidebar} setShowSidebar = {setShowSidebar} getSavedPoints={getSavedPoints} currCoord = {currCoord} setCurrCoord={setCurrCoord} PointsDB={PointsDB} />
+        <PointAdder showSidebar={showSidebar} setShowSidebar = {setShowSidebar}  addPoints={addPoints} setCurrDesc={setCurrDesc} currDesc={currDesc} setCurrTitle={setCurrTitle} currTitle={currTitle}/>
       </div>
     </>
   );

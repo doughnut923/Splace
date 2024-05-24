@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-function Icon(){
+function Icon(props){
 
     return (
         <>
