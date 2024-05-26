@@ -1,15 +1,19 @@
 import * as React from "react";
 import { useState } from "react";
+import { checkUserPassword } from "./APIHandler"
 
-function Login({ users, setLoginStatus }) {
+function Login({ setPointsDB, loadLocations, setUserId, setLoginStatus }) {
 
-    function loginUser() {
-        for (var i = 0; i < users.length; i++) {
-            if (users[i].name === username && users[i].password === password) {
-                setLoginStatus(1);
-                console.log("hi")
-            }
+    async function loginUser() {
+        const login = await checkUserPassword(username, password);
+        if (login.status) {
+            setUserId(login.id);
+
+            setLoginStatus(1);
+
+            return;
         }
+        setLoginStatus(0);
     }
 
     const [username, setUsername] = useState("");

@@ -19,9 +19,14 @@ const upload = multer({ storage });
 const Location = require("../models/LocationModel.js")
 
 router.get('/', asyncHandler(async (req, res) => {
-    const locations = await Location.findById(req.query.id);
+    if(!req.query.id){
+        const locations = await Location.find();
+        res.status(200).json(locations);
+    }
 
-    res.status(200).json(locations);
+    const location = await Location.findById(req.query.id);
+
+    res.status(200).json(location);
 }));
 
 router.post('/', upload.single("image"), asyncHandler(async (req, res) => {
@@ -53,7 +58,7 @@ router.put('/', asyncHandler(async (req, res) => {
         coordinates: [req.query.coordX, req.query.coordY],
         description: req.query.desc
     }, { new: true })
-
+    
     res.status(200).json(updateLocation);
 }));
 

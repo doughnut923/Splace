@@ -29,6 +29,9 @@ export default function MapComponent({ showSidebar, setShowSidebar, getSavedPoin
     }
 
     useEffect(() => {
+        console.log("Points DB changed:");
+        console.log(PointsDB);
+
 
         const osmLayer = new TileLayer({
             preload: Infinity,
