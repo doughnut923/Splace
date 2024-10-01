@@ -2,14 +2,29 @@
 import './App.css';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import ImageLoader from './ImageLoader';
-import LocationContext from "./LocationContext"
-import LocationImages from "./LocationImages"
-import LocationTitle from './LocationTitle';
+import ImageLoader from './ImageLoader.tsx';
+import LocationContext from "./LocationContext.tsx"
+import LocationImages from "./LocationImages.tsx"
+import LocationTitle from './LocationTitle.tsx';
 
 function PointAdder({ showSidebar, setShowSidebar, addPoints, setCurrDesc, currDesc, currTitle, setCurrTitle }) {
 
-  const [inputPhase, setInputPhase] = useState(0);
+  const [inputPhase, setInputPhase] = useState<0 | 1>(0);
+  const [images, setImages] = useState<File | null>();
+
+  function handleImage(file : File | null){
+    console.log(file);
+
+    if(file == null){
+      console.error("No Files Selected.");
+    }
+
+    setImages (file)
+  }
+
+  useEffect(() =>{
+    console.log("Image CHANGEDD!!!");
+  }, [images])
 
   return (
     <>
@@ -32,7 +47,7 @@ function PointAdder({ showSidebar, setShowSidebar, addPoints, setCurrDesc, currD
                 setCurrTitle(e.target.value);
               }}></input>
               <h1 className="input-title">【文】</h1>
-              <textarea className='input-field-large' placeholder="你做咗啲乜？" value={currDesc} type='text' onChange={e => {
+              <textarea className='input-field-large' placeholder="你做咗啲乜？" value={currDesc} onChange={e => {
                 setCurrDesc(e.target.value);
               }}></textarea>
             </div>
@@ -47,10 +62,12 @@ function PointAdder({ showSidebar, setShowSidebar, addPoints, setCurrDesc, currD
             <h1 className='input-title'>【映】</h1>
             <ImageLoader />
             <form>
-              <input type='file' id="image-upload" name='filename'></input>
-              <button id="submit-image" type="button" onClick={() => {
+              <input type='file' id="image-upload" name='filename' onChange=
+                {(e) => handleImage(e.target.files[0])}
+              ></input>
+              <button id="submit-image" type="button" onClick={(e) => {
+                addPoints(images);
                 setInputPhase(0);
-                addPoints();
               }} className='btn'>結</button>
             </form>
           </div>

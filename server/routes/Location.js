@@ -19,7 +19,7 @@ const upload = multer({ storage });
 const Location = require("../models/LocationModel.js")
 
 router.get('/', asyncHandler(async (req, res) => {
-    if(!req.query.id){
+    if (!req.query.id) {
         const locations = await Location.find();
         res.status(200).json(locations);
     }
@@ -30,10 +30,18 @@ router.get('/', asyncHandler(async (req, res) => {
 }));
 
 router.post('/', upload.single("image"), asyncHandler(async (req, res) => {
+
     if (!req.query) {
         res.status(400);
         throw new Error("Please enter query");
     }
+
+    if(!req.file){
+        res.status(400).send("No File");
+        throw new Error("Please enter query");
+    }
+
+    console.log(req)
 
     const newLocation = await Location.create({
         title: req.query.title,
@@ -58,7 +66,7 @@ router.put('/', asyncHandler(async (req, res) => {
         coordinates: [req.query.coordX, req.query.coordY],
         description: req.query.desc
     }, { new: true })
-    
+
     res.status(200).json(updateLocation);
 }));
 

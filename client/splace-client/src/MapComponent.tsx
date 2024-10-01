@@ -30,7 +30,7 @@ export default function MapComponent({ showSidebar, setShowSidebar, getSavedPoin
 
     useEffect(() => {
         console.log("Points DB changed:");
-        console.log(PointsDB);
+        console.log(getSavedPoints());
 
 
         const osmLayer = new TileLayer({
@@ -71,7 +71,6 @@ export default function MapComponent({ showSidebar, setShowSidebar, getSavedPoin
             })
 
         });
-
 
         //create layer for marker 
         const marker_layer = new VectorLayer({
@@ -125,7 +124,7 @@ export default function MapComponent({ showSidebar, setShowSidebar, getSavedPoin
             if (feature) {
                 overlay.setPosition(clickedCoordinate);
                 console.log(popup.current)
-                popup.current.childNodes[0].innerHTML = getTitleByID(feature.get('name'));
+                // popup.current.childNodes[0].innerHTML = getTitleByID(feature.get('name'));
                 return;
             }
 
@@ -143,13 +142,13 @@ export default function MapComponent({ showSidebar, setShowSidebar, getSavedPoin
             console.log(`Zoom: ${newZoom}\nNew extent: ${newExtent[3] - newExtent[1]}`);
         });
 
-        return () => map.setTarget(null)
+        return () => map.setTarget(undefined)
     }, [PointsDB]);
 
     return (
         <>
             <div style={{ height: '300px', width: '100%' }} id="map" className={showSidebar ? "map-container show-sidebar" : "map-container"} />
-            <div id="popup" className="ol-popup" ref={popup}>
+            <div id="popup" className="ol-popup">
                 <h1>123</h1>
                 <img></img>
             </div>

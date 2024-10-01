@@ -76,6 +76,7 @@ router.put('/addLocationToUser', asyncHandler(async (req, res) => {
     await user.save()
 
     res.status(200).json(user);
+    
 }));
 
 router.delete('/', asyncHandler(async (req, res) => {

@@ -1,30 +1,68 @@
+import axios from "axios"
 
+const headers: HeadersInit = {
+    "Content-Type": `multipart/form-data;`,
+    Accept: "multipart/form-data",
+  };
+  
+  export const axiosInstance = axios.create({
+    baseURL: "https://localhost:5000",
+    headers,
+  });
 
 //upload location to the database
 //add the location to Locaitons DB
 //add the locationID to Users DB
-async function postLocation(title, desc, coordinates, imageData, userID) {
-    const LocationResponse = await fetch(`${process.env.SERVER_URL}/location/?title=${title}&desc=${desc}&coordX=${coordinates[0]}&coordY=${coordinates[1]}`, {
+
+type LocationData = {
+    coordinates: [number, number],
+    title: string,
+    description: string,
+    imageAddr: string,
+    _id: string
+}
+
+
+async function postLocation(title : string, desc : string, coordinates : [number, number], imageData : File, userID : string) {
+    console.log("Posting Location!");
+
+    var formData = new FormData();
+
+    if (!imageData) {
+        console.error("No Image!");
+        return;
+    }
+
+    console.log(imageData)
+
+    formData.append("image", imageData)
+
+    const LocationResponse = await fetch(`http://localhost:8000/location/?title=${title}&desc=${desc}&coordX=${coordinates[0]}&coordY=${coordinates[1]}`, {
         method: "POST",
-        body: imageData,
+        body: formData,
         mode: "cors",
         cache: "no-cache",
         credentials: "same-origin",
-        headers: {
-            "Content-Type": "application/json",
-        },
+        // headers: {
+        //     "Content-Type": "multipart/form-data",
+        // },
         redirect: "follow",
         referrerPolicy: "no-referrer"
     });
 
-    const updateUserLocations = await fetch(`${process.env.SERVER_URL}/user/addLocationToUser/?id=${userID}&newLocation=${LocationResponse._id}`);
+    var LocationResponseJson : LocationData = await LocationResponse.json();
+
+
+    const updateUserLocations = await fetch(`http://localhost:8000/user/addLocationToUser/?id=${userID}&newLocation=${LocationResponseJson._id}`,
+        { method: "PUT" }
+    );
 
 }
 
 //return all locations by a user from the database and should be stored as as state
-async function getLocationsByUser(userID) {
-    var locationIDs;
-    var locations = []
+async function getLocationsByUser(userID): Promise<LocationData[] | null> {
+    var locationIDs : string[];
+    var locations : LocationData[]  = []
     const data = await fetch(`http://localhost:8000/user/?id=${userID}`, {
         method: "GET",
         mode: "cors",
@@ -39,16 +77,16 @@ async function getLocationsByUser(userID) {
     const user = await data.json();
 
     locationIDs = user.locations;
-    
-    if(!locations)
-        return;
+
+    if (!locations)
+        return null;
 
     for await (const location of locationIDs) {
-        try{
-            const locationData = await fetch(`http://localhost:8000/location/?id=${location}`);
-            const locationInfo = await locationData.json();
+        try {
+            const locationData  = await fetch(`http://localhost:8000/location/?id=${location}`);
+            const locationInfo : LocationData = await locationData.json();
             locations.push(locationInfo);
-        }catch(error){
+        } catch (error) {
             console.log(error);
             break;
         }
@@ -86,4 +124,4 @@ async function checkUserPassword(username, password) {
 }
 
 
-export {getLocationsByUser, postLocation, checkUserPassword}
+export { getLocationsByUser, postLocation, checkUserPassword, LocationData}

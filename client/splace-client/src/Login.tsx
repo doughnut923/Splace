@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { checkUserPassword } from "./APIHandler"
+import { checkUserPassword } from "./APIHandler.tsx"
 
 function Login({ setPointsDB, loadLocations, setUserId, setLoginStatus }) {
 

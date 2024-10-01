@@ -1,32 +1,30 @@
-import logo from './logo.svg';
 import './App.css';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import MapComponent from './MapComponent';
+import MapComponent from './MapComponent.tsx';
 import { Map } from 'react-map-gl';
 import { Feature } from 'ol';
 import { Point } from 'ol/geom';
-import PointAdder from './PointAdder';
-import Icon from './Icon';
-import Login from './Login';
-import { getLocationsByUser } from './APIHandler';
-
+import PointAdder from './PointAdder.tsx';
+import Icon from './Icon.tsx';
+import Login from './Login.tsx';
+import { getLocationsByUser, LocationData, postLocation } from './APIHandler.tsx';
 
 function App() {
 
   const [loginStatus, setLoginStatus] = useState(0);
 
-  const [PointsDB, setPointsDB] = useState([]);
+  const [PointsDB, setPointsDB] = useState<LocationData[] | null >(null);
 
   const [userID, setUserID] = useState("");
 
-  const [currCoord, setCurrCoord] = useState([0, 0]);
+  const [currCoord, setCurrCoord] = useState<[number, number]>([0, 0]);
   const [currDesc, setCurrDesc] = useState("");
   const [currTitle, setCurrTitle] = useState("");
 
   const [showSidebar, setShowSidebar] = useState(0);
 
-  function addPoints(desc) {
+  function addPoints(image : File) {
 
     // setPointsDB(
     //   [...PointsDB,
@@ -41,20 +39,35 @@ function App() {
     // setCurrCoord([0, 0]);
     // setCurrDesc("");
     // setCurrTitle("");
+
+    postLocation(
+      currTitle,
+      currDesc,
+      currCoord,
+      image,
+      userID
+    );
+
+
   }
 
   async function loadLocations() {
-    const data = await getLocationsByUser(userID);
+    const data : LocationData[] | null = await getLocationsByUser(userID);
+    if(!data){
+      console.error("Could not fetch Location Data")
+    }
+    console.log(data)
     setPointsDB(data);
-    console.log(data);
   }
 
 
   function getSavedPoints() {
 
-    if (!PointsDB) {
+    if (PointsDB == null) {
       return
     }
+
+    console.log(PointsDB)
 
     return PointsDB.map((point) => {
       return new Feature({
@@ -67,8 +80,11 @@ function App() {
   }
 
   useEffect(()=>{
+    if(userID == undefined){
+      return
+    }
     loadLocations();
-  },[loginStatus]);
+  },[userID]);
   
 
   return (
