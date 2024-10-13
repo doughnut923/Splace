@@ -30,7 +30,7 @@ async function postLocation(title : string, desc : string, coordinates : [number
 
     if (!imageData) {
         console.error("No Image!");
-        return;
+        return 0;
     }
 
     console.log(imageData)

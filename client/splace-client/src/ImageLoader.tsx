@@ -1,9 +1,10 @@
 import * as React from "react"
 
-function ImageLoader(){
+function ImageLoader({ImageUrl}){
 
     return (
         <>
+            <img src={ImageUrl} />
         </>
     );
 

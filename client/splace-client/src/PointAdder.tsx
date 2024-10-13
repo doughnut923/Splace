@@ -7,24 +7,23 @@ import LocationContext from "./LocationContext.tsx"
 import LocationImages from "./LocationImages.tsx"
 import LocationTitle from './LocationTitle.tsx';
 
-function PointAdder({ showSidebar, setShowSidebar, addPoints, setCurrDesc, currDesc, currTitle, setCurrTitle }) {
+function PointAdder({ showSidebar, setShowSidebar, addPoints, setCurrDesc, currDesc, currTitle, setCurrTitle, resetQuery }) {
 
   const [inputPhase, setInputPhase] = useState<0 | 1>(0);
   const [images, setImages] = useState<File | null>();
+  const [imageUrl, setImagesUrl] = useState<String>("");
+  const [showHint, setShowHint] = useState<0 | 1>(0)
 
-  function handleImage(file : File | null){
+  function handleImage(file: File | null) {
     console.log(file);
 
-    if(file == null){
+    if (!file) {
       console.error("No Files Selected.");
+      return;
     }
-
-    setImages (file)
+    setImagesUrl(URL.createObjectURL(file));
+    setImages(file);
   }
-
-  useEffect(() =>{
-    console.log("Image CHANGEDD!!!");
-  }, [images])
 
   return (
     <>
@@ -33,6 +32,10 @@ function PointAdder({ showSidebar, setShowSidebar, addPoints, setCurrDesc, currD
         <div id='exit-button' onClick={() => {
           console.log(1);
           setShowSidebar(0);
+          setImages(null);
+          setImagesUrl("");
+          resetQuery();
+          setInputPhase(0);
         }} >
           <span className="material-symbols-outlined">
             close
@@ -60,14 +63,26 @@ function PointAdder({ showSidebar, setShowSidebar, addPoints, setCurrDesc, currD
         <div className={inputPhase ? "add-image-section show" : "add-image-section"}>
           <div className='input-field-container'>
             <h1 className='input-title'>【映】</h1>
-            <ImageLoader />
+            <ImageLoader ImageUrl={imageUrl} />
             <form>
               <input type='file' id="image-upload" name='filename' onChange=
                 {(e) => handleImage(e.target.files[0])}
               ></input>
+              {showHint ? <p>Please Provide IMMAGE</p> : null}
               <button id="submit-image" type="button" onClick={(e) => {
-                addPoints(images);
-                setInputPhase(0);
+                var status = 1;
+                status = addPoints(images);
+                if (status) {
+                  setInputPhase(0);
+                  setShowHint(0);
+                } else {
+                  setShowHint(1);
+                  resetQuery();
+                  setImages(null);
+                  setImagesUrl("");
+                  setInputPhase(0)
+                }
+                // status ? setInputPhase(0) : setShowHint(1);
               }} className='btn'>結</button>
             </form>
           </div>

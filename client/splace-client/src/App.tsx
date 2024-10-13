@@ -8,6 +8,9 @@ import { Point } from 'ol/geom';
 import PointAdder from './PointAdder.tsx';
 import Icon from './Icon.tsx';
 import Login from './Login.tsx';
+import "leaflet/dist/leaflet.css";
+import { MapContainer, TileLayer, useMap } from 'react-leaflet'
+
 import { getLocationsByUser, LocationData, postLocation } from './APIHandler.tsx';
 
 function App() {
@@ -23,6 +26,11 @@ function App() {
   const [currTitle, setCurrTitle] = useState("");
 
   const [showSidebar, setShowSidebar] = useState(0);
+
+  function resetQuery(){
+    setCurrDesc("");
+    setCurrTitle("");
+  }
 
   function addPoints(image : File) {
 
@@ -40,6 +48,10 @@ function App() {
     // setCurrDesc("");
     // setCurrTitle("");
 
+    if(image == null){
+      return 0;
+    }
+
     postLocation(
       currTitle,
       currDesc,
@@ -48,6 +60,7 @@ function App() {
       userID
     );
 
+    return 1;
 
   }
 
@@ -61,22 +74,24 @@ function App() {
   }
 
 
-  function getSavedPoints() {
+  function getSavedPoints (): LocationData[] | null{
 
     if (PointsDB == null) {
-      return
+      return null;
     }
 
-    console.log(PointsDB)
+    return PointsDB;
 
-    return PointsDB.map((point) => {
-      return new Feature({
-        geometry: new Point(
-          point.coordinates
-        ),
-        name: point._id
-      })
-    });
+    // return PointsDB.map((point) => {
+    //   // return new Feature({
+    //   //   geometry: new Point(
+    //   //     point.coordinates
+    //   //   ),
+    //   //   name: point._id
+    //   // })
+
+    //   return 
+    // });
   }
 
   useEffect(()=>{
@@ -95,7 +110,7 @@ function App() {
       <div id="map-container" className={loginStatus ? "show-map" : "unshow-map"}>
         <Icon />
         <MapComponent showSidebar={showSidebar} setShowSidebar={setShowSidebar} getSavedPoints={getSavedPoints} currCoord={currCoord} setCurrCoord={setCurrCoord} PointsDB={PointsDB} />
-        <PointAdder showSidebar={showSidebar} setShowSidebar={setShowSidebar} addPoints={addPoints} setCurrDesc={setCurrDesc} currDesc={currDesc} setCurrTitle={setCurrTitle} currTitle={currTitle} />
+        <PointAdder showSidebar={showSidebar} setShowSidebar={setShowSidebar} addPoints={addPoints} setCurrDesc={setCurrDesc} currDesc={currDesc} setCurrTitle={setCurrTitle} currTitle={currTitle} resetQuery={resetQuery} />
       </div>
     </>
   );
