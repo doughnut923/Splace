@@ -10,40 +10,55 @@ import React, { useState, useEffect, createRef, useRef, useCallback } from 'reac
 // import { Point } from 'ol/geom';
 // import Style from 'ol/style/Style'
 // import Icon from 'ol/style/Icon.js';
-import L from 'leaflet';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet'
+import L, { LeafletMouseEvent } from 'leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet'
+import MapEventsHandler from './MapEventsHandler.tsx';
 import 'ol/ol.css';
-import { LatLng } from 'leaflet';
 import { LocationData } from './APIHandler';
 
-function MyComponent() {
-    const map = useMapEvents({
-        click: (e) => {
-            e.latlng
-        }
-    })
-    return null
-}
 
+export default function MapComponent({ showSidebar, setShowSidebar, PointsDB, currCoord, setCurrCoord }) {
 
-export default function MapComponent({ showSidebar, setShowSidebar, getSavedPoints, currCoord, setCurrCoord, PointsDB }) {
+    // 1. Show the current coordinate as latlng
+    // 2. Set the map center
+    // 3. Add onclick event to set the current coordinate and show the sidebar
+    // 4. Add markers to the map
 
-    
+    const mapOptions = {
+        center: [22.300532082873683, 114.14382934570314] as [number, number],
+        zoom: 11.5,
+        maxZoom: 19,
+        minZoom: 5,
+    };
+
+    const handleMapClick = (e: LeafletMouseEvent) => {
+        console.log(e.latlng);
+        setCurrCoord([e.latlng.lat, e.latlng.lng]);
+        setShowSidebar(1);
+    }
 
     return (
         <>
-            <MapContainer center={[22.329752304376484, 114.15309906005861]} zoom={11.3} scrollWheelZoom={true}>
+            <MapContainer id="map" {...mapOptions}>
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                <MyComponent />
-                {getSavedPoints().array.forEach((element : LocationData) => {
-                    <Marker position={element.coordinates}>
+                <MapEventsHandler handleMapClick={handleMapClick} />
+                {PointsDB ? PointsDB.map((element: LocationData) => (
+                    <Marker key={element._id} position={element.coordinates}>
+                        <Popup>
+                            {element.description}
+                        </Popup>
+                    </Marker>
+
+                )) : null}
+
+                {/* Marker for current position */}
+                <Marker position={currCoord}>
                     <Popup>
                         A pretty CSS3 popup. <br /> Easily customizable.
                     </Popup>
                 </Marker>
-                })}
             </MapContainer>
         </>
     );

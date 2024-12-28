@@ -109,7 +109,7 @@ function App() {
       </div>
       <div id="map-container" className={loginStatus ? "show-map" : "unshow-map"}>
         <Icon />
-        <MapComponent showSidebar={showSidebar} setShowSidebar={setShowSidebar} getSavedPoints={getSavedPoints} currCoord={currCoord} setCurrCoord={setCurrCoord} PointsDB={PointsDB} />
+        <MapComponent showSidebar={showSidebar} setShowSidebar={setShowSidebar} PointsDB={PointsDB} currCoord={currCoord} setCurrCoord={setCurrCoord} PointsDB={PointsDB} />
         <PointAdder showSidebar={showSidebar} setShowSidebar={setShowSidebar} addPoints={addPoints} setCurrDesc={setCurrDesc} currDesc={currDesc} setCurrTitle={setCurrTitle} currTitle={currTitle} resetQuery={resetQuery} />
       </div>
     </>
