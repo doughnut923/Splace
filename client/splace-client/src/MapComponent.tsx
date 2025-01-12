@@ -10,11 +10,12 @@ import React, { useState, useEffect, createRef, useRef, useCallback } from 'reac
 // import { Point } from 'ol/geom';
 // import Style from 'ol/style/Style'
 // import Icon from 'ol/style/Icon.js';
-import L, { LeafletMouseEvent } from 'leaflet';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet'
+import L, { LeafletMouseEvent, map } from 'leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMapEvent } from 'react-leaflet'
 import MapEventsHandler from './MapEventsHandler.tsx';
 import 'ol/ol.css';
 import { LocationData } from './APIHandler';
+import iconImage from './location-pointer.png';
 
 
 export default function MapComponent({ showSidebar, setShowSidebar, PointsDB, currCoord, setCurrCoord }) {
@@ -24,6 +25,7 @@ export default function MapComponent({ showSidebar, setShowSidebar, PointsDB, cu
     // 3. Add onclick event to set the current coordinate and show the sidebar
     // 4. Add markers to the map
 
+
     const mapOptions = {
         center: [22.300532082873683, 114.14382934570314] as [number, number],
         zoom: 11.5,
@@ -31,11 +33,28 @@ export default function MapComponent({ showSidebar, setShowSidebar, PointsDB, cu
         minZoom: 5,
     };
 
+    const customIcon = L.icon({
+        iconUrl: iconImage,
+        iconSize: [30, 30],
+    });
+
     const handleMapClick = (e: LeafletMouseEvent) => {
         console.log(e.latlng);
+
         setCurrCoord([e.latlng.lat, e.latlng.lng]);
         setShowSidebar(1);
     }
+
+    function SetViewOnClick() {
+        const map = useMapEvent('click', (e) => {
+            map.setView(e.latlng, map.getZoom(), {
+                animate:true
+            })
+        })
+        return null
+    }
+
+    //TODO: Set map size when sidebar is shown or hidden
 
     return (
         <>
@@ -44,21 +63,19 @@ export default function MapComponent({ showSidebar, setShowSidebar, PointsDB, cu
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 <MapEventsHandler handleMapClick={handleMapClick} />
+                <SetViewOnClick />
                 {PointsDB ? PointsDB.map((element: LocationData) => (
-                    <Marker key={element._id} position={element.coordinates}>
+                    <Marker key={element._id} position={element.coordinates} icon={customIcon}>
                         <Popup>
-                            {element.description}
+                            <h1>{element.title}</h1>
+                            <p>{element.description}</p>
                         </Popup>
                     </Marker>
 
                 )) : null}
 
                 {/* Marker for current position */}
-                <Marker position={currCoord}>
-                    <Popup>
-                        A pretty CSS3 popup. <br /> Easily customizable.
-                    </Popup>
-                </Marker>
+                <Marker position={currCoord} icon={customIcon}></Marker>
             </MapContainer>
         </>
     );
