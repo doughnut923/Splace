@@ -99,8 +99,7 @@ router.get("/checkpassword/", asyncHandler(async (req, res) => {
     console.log("someone!")
     res.set('Access-Control-Allow-Origin', '*');
     if (!user) {
-        res.status(400);
-        throw new Error("Username Not Found");
+        res.status(400).send("Username Not Found");
     }
     if (user.password === req.query.password) {
         res.status(200).send({
@@ -109,7 +108,7 @@ router.get("/checkpassword/", asyncHandler(async (req, res) => {
         });
         return
     }
-    res.status(200).send({ "login_status": "Fail" });
+    res.status(400).send({ "login_status": "Fail" });
 
 }));
 

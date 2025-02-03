@@ -109,6 +109,12 @@ async function checkUserPassword(username, password) {
             referrerPolicy: "no-referrer"
         }
     );
+    if (data.status == 400) {
+        return {
+            status: 0,
+            id: null
+        };
+    }
     const login = await data.json();
     if (login.login_status == "Success") {
         console.log("Logged: " + login.id);

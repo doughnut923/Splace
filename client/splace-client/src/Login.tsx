@@ -2,17 +2,17 @@ import * as React from "react";
 import { useState } from "react";
 import { checkUserPassword } from "./APIHandler.tsx"
 
-function Login({ setPointsDB, loadLocations, setUserId, setLoginStatus }) {
+function Login({ setPointsDB, loadLocations, setUserId, setLoginStatus, setShowLoginFailed}) {
 
     async function loginUser() {
         const login = await checkUserPassword(username, password);
-        if (login.status) {
+        if (login.status == 1) {
             setUserId(login.id);
-
             setLoginStatus(1);
-
             return;
         }
+        console.log("Login failed");
+        setShowLoginFailed(1);
         setLoginStatus(0);
     }
 
@@ -31,6 +31,7 @@ function Login({ setPointsDB, loadLocations, setUserId, setLoginStatus }) {
                 <input className="input-field" type="password" onChange={(e) => {
                     setPassword(e.target.value);
                 }} value={password}></input>
+                <a href="http://" className="forget-pass">忘記密碼</a>
                 <button type="button" onClick={() => {
                     loginUser();
                 }}>登入</button>

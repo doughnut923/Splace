@@ -46,6 +46,45 @@ body{
   overflow: hidden;
 }
 
+#login-failed{
+  position: absolute;
+  z-index: 2;
+  /* top: -10rem; */
+  left: 50%;
+  transform: translate(-50%,0);
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-weight: 400;
+  border-radius: 1rem;
+  transition: all .3s;
+}
+
+#login-failed span{
+  text-align: center;
+  display: block;
+  color: rgb(225, 151, 151);
+  font-size: 1rem;
+}
+
+#login-failed svg{
+  text-align: center;
+  display: block;
+  fill: rgb(225, 151, 151);
+  width: 100%;
+  align-items: center;
+}
+
+.unshow-login-failed{
+  transform: translate(-50%, -100px) !important;
+}
+
+
+#login-container .logo{
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+}
+
 .show-login{
   display: block;
   position: absolute;
@@ -67,27 +106,39 @@ body{
   top:50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  height: 40vh;
+  height: 23rem;
+}
+
+.show-login form h1{
+  font-weight: 800;
 }
 
 .show-login form h2{
   font-weight: 400;
-  font-size: 1.3rem;
+  font-size: 1rem;
 }
 
 .show-login form .input-field{
   width: 100%;
   font-size: 1.1rem;
-  padding: .5rem;
+  padding: .5rem 0;
   border: none;
+  font-family: "source-han-serif";
+  transition: all .3s;
 }
+
+.show-login form .input-field:focus{
+  padding: .6rem;
+  background-color: #f8f8f8;
+}
+
 
 .show-login form button{
   position: absolute;
   font-family: "source-han-serif";
   right: 0;
   bottom: 0;
-  font-size: 1.2rem;
+  font-size: 1rem;
   padding: .4rem;
   background-color: transparent;
   border: solid 2px #616161;
@@ -101,7 +152,18 @@ body{
   cursor: pointer;
 }
 
+.show-login form .forget-pass{
+  display: block;
+  margin-top: .5rem;
+  color: #747474;
+  font-weight: 100;
+  transition: all .3s;
+}
 
+.show-login form .forget-pass:hover{
+  color: #969696;
+
+}
 
 .unshow-login{
   display: none;
@@ -141,16 +203,6 @@ body{
 body{
   height: 100vh;
   width: 100vw;
-}
-
-.icon{
-  position: absolute;
-  z-index: 1;
-  padding: 1rem;
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: .3rem;
-  color: #f4f4f4;
 }
 
 .map-container{
@@ -361,6 +413,37 @@ body{
   margin: 0;
   font-size: 1.5rem;
   font-weight: 400;
+}
+
+.nav{
+  position: absolute;
+  left: 0;
+  width: 70px;
+  height: 100vh;
+  background-color: #f4f4f4;
+  z-index: 2;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.nav .icon{
+  z-index: 1;
+  padding: 1rem;
+  font-size: 2rem;
+  font-weight: 800;
+  display: block;
+  color: #616161;
+  text-align: center;
+}
+
+.nav svg.icon{
+  margin: auto;
+  fill: #616161;
+  transition: all .3s;
+}
+
+.nav svg.icon:hover{
+  fill: #969696;
+  cursor: pointer;
 }
 
 

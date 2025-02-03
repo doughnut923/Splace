@@ -2,15 +2,10 @@ import './App.css';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import MapComponent from './MapComponent.tsx';
-import { Map } from 'react-map-gl';
-import { Feature } from 'ol';
-import { Point } from 'ol/geom';
 import PointAdder from './PointAdder.tsx';
 import Icon from './Icon.tsx';
 import Login from './Login.tsx';
 import "leaflet/dist/leaflet.css";
-import { MapContainer, TileLayer, useMap } from 'react-leaflet'
-
 import { getLocationsByUser, LocationData, postLocation } from './APIHandler.tsx';
 
 function App() {
@@ -26,6 +21,8 @@ function App() {
   const [currTitle, setCurrTitle] = useState("");
 
   const [showSidebar, setShowSidebar] = useState(0);
+
+  const [showLoginFailed, setShowLoginFailed] = useState(0);
 
   function resetQuery(){
     setCurrDesc("");
@@ -104,12 +101,17 @@ function App() {
 
   return (
     <>
+      <div id='login-failed' className={showLoginFailed ? "show-login-failed" : "unshow-login-failed"}>
+        <span>登入失敗</span>
+        <svg onClick={() => setShowLoginFailed(0)} className="close" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+      </div>
       <div id='login-container' className={loginStatus ? "unshow-login" : "show-login"}>
-        <Login setPointsDB={setPointsDB} loadLocations={loadLocations} setUserId={setUserID} setLoginStatus={setLoginStatus} />
+        <img src="./logo_trans.svg" alt="" className='logo'/>
+        <Login setPointsDB={setPointsDB} loadLocations={loadLocations} setUserId={setUserID} setLoginStatus={setLoginStatus} setShowLoginFailed={setShowLoginFailed}/>
       </div>
       <div id="map-container" className={loginStatus ? "show-map" : "unshow-map"}>
-        <Icon />
-        <MapComponent showSidebar={showSidebar} setShowSidebar={setShowSidebar} PointsDB={PointsDB} currCoord={currCoord} setCurrCoord={setCurrCoord} PointsDB={PointsDB} />
+        <Icon/>
+        <MapComponent showSidebar={showSidebar} setShowSidebar={setShowSidebar} PointsDB={PointsDB} currCoord={currCoord} setCurrCoord={setCurrCoord} />
         <PointAdder showSidebar={showSidebar} setShowSidebar={setShowSidebar} addPoints={addPoints} setCurrDesc={setCurrDesc} currDesc={currDesc} setCurrTitle={setCurrTitle} currTitle={currTitle} resetQuery={resetQuery} />
       </div>
     </>
